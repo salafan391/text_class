@@ -1,13 +1,13 @@
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.preprocessing import LabelEncoder,OneHotEncoder
 import pandas as pd
-import numpy as np
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
-import tensorflow as tf
-from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
+from sklearn.metrics import accuracy_score,recall_score,precision_score,f1_score
+from sklearn.metrics import accuracy_score,recall_score,precision_score,f1_score
 import random
+import tensorflow as tf
+import numpy as np
 
 
 class TextNLP:
@@ -67,24 +67,24 @@ class TextNLP:
     return df
   def text_tolist(self,df):
     return df['text'].to_list()
-  def label_encoding(self,df,split_on):
+  def label_encoding(self,train,val,test):
+    train = train['target'].to_numpy()
+    val = val['target'].to_numpy()
+    test = test['target'].to_numpy()
     encoder = LabelEncoder()
-    target = df['target'].to_numpy()
-    if split_on == 'train':
-      target = encoder.fit_transform(target)
-      return target
-    elif split_on == 'validation' or split_on=='test':
-      target = encoder.transform(target)
-      return target
-  def onehot_encoding(self,df,split_on):
-    target = df.target.to_numpy().reshape(-1,1)
-    onehot = OneHotEncoder(sparse_output=False)
-    if split_on == 'train':
-      target = onehot.fit_transform(target)
-      return target
-    elif split_on == 'validation' or split_on=='test':
-      target = onehot.transform(target)
-      return target
+    train = encoder.fit_transform(train)
+    val = encoder.transform(val)
+    test = encoder.transform(test)
+    return (train,val,test)
+  def onehot_encoding(self,train,val,test):
+    train = train['target'].to_numpy().reshape(-1,1)
+    val = val['target'].to_numpy().reshape(-1,1)
+    test = test['target'].to_numpy().reshape(-1,1)
+    encoder = OneHotEncoder(sparse_output=False)
+    train = encoder.fit_transform(train)
+    val = encoder.transform(val)
+    test = encoder.transform(test)
+    return (train,val,test)
   def calculate(self,y_true,preds):
     scores = {}
     scores['accuracy'] = accuracy_score(y_true,preds)
@@ -92,7 +92,6 @@ class TextNLP:
     scores['precision'] = precision_score(y_true,preds,average='weighted')
     scores['f1_score'] = f1_score(y_true,preds,average='weighted')
     return scores
-
   def create_baseline_model(self,X_train,y_train):
     pipe = Pipeline([('tfidf',TfidfVectorizer()),('model',MultinomialNB())])
     pipe.fit(X_train,y_train)
@@ -107,9 +106,3 @@ class TextNLP:
   def dataset_autotune(self,X,y):
     dataset = tf.data.Dataset.from_tensor_slices((X,y)).batch(32).prefetch(tf.data.AUTOTUNE)
     return dataset
-
-
-
-
-
-
