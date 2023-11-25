@@ -36,7 +36,7 @@ class TextNLP:
           "line_number": 8,
           "total_lines": 8}]
     """
-    with open(self.main_path+filename) as file:
+    with open(path) as file:
       input_lines=  file.readlines()
      # get all lines from filename
     abstract_lines = "" # create an empty abstract
