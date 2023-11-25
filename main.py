@@ -8,12 +8,13 @@ from sklearn.metrics import accuracy_score,recall_score,precision_score,f1_score
 import random
 import tensorflow as tf
 import numpy as np
-
+import os
 
 class TextNLP:
   def __init__(self,main_path):
     self.main_path = main_path
   def preprocess_text(self,filename):
+    path = os.path.join(self.main_path,filename)
     """Returns a list of dictionaries of abstract line data.
 
     Takes in filename, reads its contents and sorts through each line,
