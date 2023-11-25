@@ -106,3 +106,7 @@ class TextNLP:
   def dataset_autotune(self,X,y):
     dataset = tf.data.Dataset.from_tensor_slices((X,y)).batch(32).prefetch(tf.data.AUTOTUNE)
     return dataset
+
+  def convert_to_chars(self,sentences):
+    chars = [' '.join(list(sentence)) for sentence in sentences]
+    return chars
